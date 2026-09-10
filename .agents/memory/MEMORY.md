@@ -1,0 +1,8 @@
+- [pdf-parse v2 + canvas](pdf-parse-v2-canvas.md) — pdf-parse v2 is ESM-first; lazy-import it & externalize pdf-parse/pdfjs-dist/@napi-rs/canvas in api-server esbuild or startup crashes on DOMMatrix.
+- [content-gen time budget](content-gen-time-budget.md) — content-gen chat runs under an internal deadline below the route timeout; generate_image always returns an image via AI→photo→placeholder fallback.
+- [carousel fixed slide count](carousel-fixed-slide-count.md) — pad LLM paragraph fields to a fixed count (never .filter), or formatted carousels silently render fewer than the contracted 5 slides.
+- [canvas slide HD rendering](canvas-slide-hd-rendering.md) — server-side canvas slides must supersample (2x canvas + ctx.scale) for sharp exports; photo fetch must prefer high-res but stay deadline-bounded.
+- [content-gen retro grain](content-gen-grain.md) — delivered images get raw additive luminance grain (not overlay blend, which dies on dark bg), applied LAST over the full composited frame for uniform film look.
+- [content-gen format enforcement](content-gen-format-enforcement.md) — force the Format selector's aspect ratio in the final delivery loop, not per-tool, or carousel/ad outputs ignore it.
+- [CCT product vs news images](cct-product-vs-news-images.md) — carousel image fetch branches on press-agency names in queries; product prompts must exclude agencies or fallbacks go news-style.
+- [antiq brand & image prompts](antiq-brand-image-prompts.md) — "antiq" alone reads as antiques to image models; anchor prompts in music-tech context; opinionmarket.mx flows are labeled legacy external source.

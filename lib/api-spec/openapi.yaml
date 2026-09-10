@@ -1,0 +1,1327 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: CCT - Content Creation Tool API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: cct
+    description: Content Creation Tool operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /cct/engine/news:
+    get:
+      operationId: getEngineNews
+      tags: [cct]
+      summary: Get filtered breaking news
+      description: Fetches real-time breaking news from multiple sources and filters for importance using AI
+      responses:
+        "200":
+          description: Filtered news articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EngineNewsResponse"
+
+  /cct/twitter/generate:
+    post:
+      operationId: generateTwitterPosts
+      tags: [cct]
+      summary: Generate Twitter posts
+      description: Fetches breaking news and generates 15-20 Twitter posts in ÚLTIMA HORA format
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateTwitterRequest"
+      responses:
+        "200":
+          description: Generated Twitter posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterPostsResponse"
+
+  /cct/twitter/generate-from-url:
+    post:
+      operationId: generateTwitterFromUrl
+      tags: [cct]
+      summary: Generate Twitter post from URL
+      description: Fetches article content from a URL and generates 1 Twitter post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateInstagramFromUrlRequest"
+      responses:
+        "200":
+          description: Generated Twitter post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterPostsResponse"
+
+  /cct/twitter/posts:
+    get:
+      operationId: getTwitterPosts
+      tags: [cct]
+      summary: Get saved Twitter posts
+      description: Returns all saved Twitter posts
+      parameters:
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+      responses:
+        "200":
+          description: List of Twitter posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterPostsListResponse"
+
+  /cct/instagram/generate:
+    post:
+      operationId: generateInstagramCarousels
+      tags: [cct]
+      summary: Generate Instagram carousels
+      description: Fetches breaking news and generates 3 Instagram carousel posts with cover + 2 content slides
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateInstagramRequest"
+      responses:
+        "200":
+          description: Generated Instagram carousels
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramCarouselsResponse"
+
+  /cct/instagram/generate-from-url:
+    post:
+      operationId: generateInstagramFromUrl
+      tags: [cct]
+      summary: Generate Instagram carousel from URL
+      description: Fetches article content from a URL and generates 1 Instagram carousel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateInstagramFromUrlRequest"
+      responses:
+        "200":
+          description: Generated Instagram carousel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramCarouselsResponse"
+
+  /cct/instagram/carousels:
+    get:
+      operationId: getInstagramCarousels
+      tags: [cct]
+      summary: Get saved Instagram carousels
+      description: Returns all saved Instagram carousels
+      parameters:
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+      responses:
+        "200":
+          description: List of Instagram carousels
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramCarouselsListResponse"
+
+  /cct/instagram/carousels/{id}:
+    get:
+      operationId: getInstagramCarousel
+      tags: [cct]
+      summary: Get a single Instagram carousel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Instagram carousel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramCarousel"
+
+  /cct/twitter/posts/{id}:
+    delete:
+      operationId: deleteTwitterPost
+      tags: [cct]
+      summary: Delete a Twitter post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/instagram/carousels/{id}/delete:
+    post:
+      operationId: deleteInstagramCarousel
+      tags: [cct]
+      summary: Delete an Instagram carousel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/twitter/posts/{id}/posted:
+    patch:
+      operationId: markTwitterPostAsPosted
+      tags: [cct]
+      summary: Mark a Twitter post as posted
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/instagram/carousels/{id}/posted:
+    patch:
+      operationId: markInstagramCarouselAsPosted
+      tags: [cct]
+      summary: Mark an Instagram carousel as posted
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/instagram/carousels/{id}/regenerate-images:
+    post:
+      operationId: regenerateCarouselImages
+      tags: [cct]
+      summary: Regenerate images for an existing carousel
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Carousel with new images
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  carousel:
+                    $ref: "#/components/schemas/InstagramCarousel"
+
+  /cct/twitter/threads/generate:
+    post:
+      operationId: generateTwitterThreads
+      tags: [cct]
+      summary: Generate Twitter threads
+      description: Fetches news and generates 3 analytical Twitter threads
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lang:
+                  type: string
+                  enum: [es, en]
+                  description: Output language for generated content (default es)
+      responses:
+        "200":
+          description: Generated threads
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterThreadsResponse"
+
+  /cct/twitter/threads/generate-market:
+    post:
+      operationId: generateMarketThread
+      tags: [cct]
+      summary: Generate a market-based Twitter thread
+      description: Scrapes a prediction-market page and generates an analytical thread
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                marketId:
+                  type: string
+                lang:
+                  type: string
+                  enum: [es, en]
+                  description: Output language for generated content (default es)
+              required:
+                - marketId
+      responses:
+        "200":
+          description: Generated thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterThreadsResponse"
+
+  /cct/twitter/threads:
+    get:
+      operationId: getTwitterThreads
+      tags: [cct]
+      summary: Get saved Twitter threads
+      parameters:
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+      responses:
+        "200":
+          description: List of threads
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TwitterThreadsListResponse"
+
+  /cct/twitter/threads/{id}:
+    delete:
+      operationId: deleteTwitterThread
+      tags: [cct]
+      summary: Delete a Twitter thread
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/twitter/threads/{id}/posted:
+    patch:
+      operationId: markTwitterThreadAsPosted
+      tags: [cct]
+      summary: Mark a Twitter thread as posted
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/instagram/slideshow-mkt/generate:
+    post:
+      operationId: generateMarketSlideshow
+      tags: [cct]
+      summary: Generate Instagram market slideshow
+      description: Builds a antiq-branded slideshow from a list of market IDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                marketIds:
+                  type: array
+                  items:
+                    type: integer
+                lang:
+                  type: string
+                  enum: [es, en]
+                  description: Output language for generated content (default es)
+              required:
+                - marketIds
+      responses:
+        "200":
+          description: Generated slideshow
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketSlideshowResponse"
+
+  /cct/instagram/slideshow-mkt:
+    get:
+      operationId: getMarketSlideshows
+      tags: [cct]
+      summary: List Instagram market slideshows
+      parameters:
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+      responses:
+        "200":
+          description: List of slideshows
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketSlideshowsListResponse"
+
+  /cct/instagram/slideshow-mkt/{id}:
+    delete:
+      operationId: deleteMarketSlideshow
+      tags: [cct]
+      summary: Delete a market slideshow
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/instagram/slideshow-mkt/{id}/posted:
+    patch:
+      operationId: markMarketSlideshowAsPosted
+      tags: [cct]
+      summary: Mark a market slideshow as posted
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/adgen/generate:
+    post:
+      operationId: generateAd
+      tags: [cct]
+      summary: Generate a single ad image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateAdRequest"
+      responses:
+        "200":
+          description: Generated ad
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateAdResponse"
+
+  /cct/adgen/ads:
+    get:
+      operationId: getAds
+      tags: [cct]
+      summary: Get all generated ads
+      responses:
+        "200":
+          description: List of ads
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdsListResponse"
+
+  /cct/adgen/ads/{id}/delete:
+    post:
+      operationId: deleteAd
+      tags: [cct]
+      summary: Delete an ad
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/adgen/ads/{id}/posted:
+    patch:
+      operationId: markAdAsPosted
+      tags: [cct]
+      summary: Mark an ad as posted
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked as posted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+  /cct/stats:
+    get:
+      operationId: getCctStats
+      tags: [cct]
+      summary: Get CCT statistics
+      description: Returns usage stats for Twitter posts and Instagram carousels
+      responses:
+        "200":
+          description: CCT statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CctStats"
+
+  /cct/usage:
+    get:
+      operationId: getUsage
+      tags: [cct]
+      summary: Get token usage
+      description: Returns token usage counters
+      responses:
+        "200":
+          description: Token usage data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageData"
+
+  /cct/content-gen/chat:
+    post:
+      operationId: contentGenChat
+      tags: [cct]
+      summary: Brand-aware content generation chat
+      description: Conversational image generation. Generates/fetches images, composites the exact antiq logo, and saves history.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentGenChatRequest"
+      responses:
+        "200":
+          description: Assistant reply with generated images
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentGenChatResponse"
+
+  /cct/content-gen/conversations:
+    get:
+      operationId: getContentGenConversations
+      tags: [cct]
+      summary: List content-gen conversations
+      parameters:
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentGenConversationsListResponse"
+
+  /cct/content-gen/conversations/{id}:
+    get:
+      operationId: getContentGenConversation
+      tags: [cct]
+      summary: Get a content-gen conversation with messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentGenConversationDetail"
+    delete:
+      operationId: deleteContentGenConversation
+      tags: [cct]
+      summary: Delete a content-gen conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+
+components:
+  schemas:
+    ContentGenAttachment:
+      type: object
+      properties:
+        name:
+          type: string
+        mimeType:
+          type: string
+        dataUrl:
+          type: string
+      required:
+        - name
+        - mimeType
+        - dataUrl
+    ContentGenChatRequest:
+      type: object
+      properties:
+        conversationId:
+          type: integer
+          nullable: true
+        message:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentGenAttachment"
+        lang:
+          type: string
+          enum: [es, en]
+        format:
+          type: string
+          enum: [auto, "1:1", "9:16", "4:5", "16:9"]
+          description: Forced aspect ratio for generated images. "auto" lets the assistant decide.
+        marketId:
+          type: string
+          nullable: true
+          description: Optional antiq.xyz market number; when set, that market's data is injected as context.
+        watermark:
+          type: boolean
+          description: When true, stamp "antiq.xyz" at the bottom of every generated image.
+        carousel:
+          type: boolean
+          description: When true, generate a fully-formatted 5-slide carousel (cover + 4 content) in the Instagram visual format, without the meme slide.
+      required:
+        - message
+    ContentGenImage:
+      type: object
+      properties:
+        dataUrl:
+          type: string
+      required:
+        - dataUrl
+    ContentGenStoredAttachment:
+      type: object
+      properties:
+        name:
+          type: string
+        mimeType:
+          type: string
+        kind:
+          type: string
+          enum: [image, document]
+        dataUrl:
+          type: string
+          nullable: true
+      required:
+        - name
+        - mimeType
+        - kind
+    ContentGenMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentGenStoredAttachment"
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentGenImage"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - role
+        - content
+    ContentGenChatResponse:
+      type: object
+      properties:
+        conversationId:
+          type: integer
+        message:
+          $ref: "#/components/schemas/ContentGenMessage"
+      required:
+        - conversationId
+        - message
+    ContentGenConversation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        lang:
+          type: string
+        posted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+    ContentGenConversationsListResponse:
+      type: object
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentGenConversation"
+      required:
+        - conversations
+    ContentGenConversationDetail:
+      type: object
+      properties:
+        conversation:
+          $ref: "#/components/schemas/ContentGenConversation"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentGenMessage"
+      required:
+        - conversation
+        - messages
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    GenerateTwitterRequest:
+      type: object
+      properties:
+        topic:
+          type: string
+          description: Optional topic filter for news search
+        lang:
+          type: string
+          enum: [es, en]
+          description: Output language for generated content (default es)
+
+    GenerateInstagramRequest:
+      type: object
+      properties:
+        topic:
+          type: string
+          description: Optional topic filter for news search
+        lang:
+          type: string
+          enum: [es, en]
+          description: Output language for generated content (default es)
+        photos:
+          type: array
+          maxItems: 4
+          items:
+            type: string
+          description: Optional user-uploaded photos (base64 or data URLs). First photo = cover, then slides 1-3 in order. When omitted, slides are text-only.
+
+    GenerateInstagramFromUrlRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL of the news article to generate a carousel from
+        title:
+          type: string
+          description: Article title (optional, avoids re-fetching)
+        description:
+          type: string
+          description: Article description/summary (optional, avoids re-fetching)
+        lang:
+          type: string
+          enum: [es, en]
+          description: Output language for generated content (default es)
+      required:
+        - url
+
+    TwitterPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+          description: Full tweet text starting with ÚLTIMA HORA
+        headline:
+          type: string
+          description: Short headline extracted from the post
+        createdAt:
+          type: string
+          format: date-time
+        copied:
+          type: boolean
+      required:
+        - id
+        - content
+        - headline
+        - createdAt
+        - copied
+
+    TwitterPostsResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwitterPost"
+        count:
+          type: integer
+      required:
+        - posts
+        - count
+
+    TwitterPostsListResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwitterPost"
+      required:
+        - posts
+
+    InstagramSlide:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [cover, content]
+        imageUrl:
+          type: string
+          description: URL to fetch the slide image
+        slideIndex:
+          type: integer
+      required:
+        - type
+        - imageUrl
+        - slideIndex
+
+    InstagramCarousel:
+      type: object
+      properties:
+        id:
+          type: integer
+        headline:
+          type: string
+        contentParagraph1:
+          type: string
+        contentParagraph2:
+          type: string
+        contentParagraph3:
+          type: string
+        caption:
+          type: string
+        posted:
+          type: boolean
+        slides:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstagramSlide"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - headline
+        - contentParagraph1
+        - contentParagraph2
+        - slides
+        - createdAt
+
+    InstagramCarouselsResponse:
+      type: object
+      properties:
+        carousels:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstagramCarousel"
+        count:
+          type: integer
+      required:
+        - carousels
+        - count
+
+    InstagramCarouselsListResponse:
+      type: object
+      properties:
+        carousels:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstagramCarousel"
+      required:
+        - carousels
+
+    MarketSlideOption:
+      type: object
+      properties:
+        label:
+          type: string
+        percentage:
+          type: number
+      required:
+        - label
+        - percentage
+
+    MarketSlide:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [cover, market, cta]
+        marketId:
+          type: integer
+          nullable: true
+        question:
+          type: string
+          nullable: true
+        imageData:
+          type: string
+          nullable: true
+        isBinary:
+          type: boolean
+          nullable: true
+        chancePercent:
+          type: number
+          nullable: true
+        changePercent:
+          type: number
+          nullable: true
+        changeDirection:
+          type: string
+          enum: [up, down, flat]
+          nullable: true
+        options:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/MarketSlideOption"
+        headline:
+          type: string
+          nullable: true
+        accentWord:
+          type: string
+          nullable: true
+      required:
+        - type
+
+    MarketSlideshow:
+      type: object
+      properties:
+        id:
+          type: integer
+        marketIds:
+          type: array
+          items:
+            type: integer
+        coverHeadline:
+          type: string
+        coverAccentWord:
+          type: string
+          nullable: true
+        caption:
+          type: string
+          nullable: true
+        posted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        slides:
+          type: array
+          items:
+            $ref: "#/components/schemas/MarketSlide"
+      required:
+        - id
+        - marketIds
+        - coverHeadline
+        - posted
+        - createdAt
+        - slides
+
+    MarketSlideshowResponse:
+      type: object
+      properties:
+        slideshow:
+          $ref: "#/components/schemas/MarketSlideshow"
+      required:
+        - slideshow
+
+    MarketSlideshowsListResponse:
+      type: object
+      properties:
+        slideshows:
+          type: array
+          items:
+            $ref: "#/components/schemas/MarketSlideshow"
+      required:
+        - slideshows
+
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    TwitterThread:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        tweets:
+          type: array
+          items:
+            type: string
+        sourceArticles:
+          type: array
+          items:
+            type: string
+        hookImageUrl:
+          type: string
+          nullable: true
+        posted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - tweets
+        - posted
+        - createdAt
+
+    TwitterThreadsResponse:
+      type: object
+      properties:
+        threads:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwitterThread"
+        count:
+          type: integer
+      required:
+        - threads
+        - count
+
+    TwitterThreadsListResponse:
+      type: object
+      properties:
+        threads:
+          type: array
+          items:
+            $ref: "#/components/schemas/TwitterThread"
+      required:
+        - threads
+
+    GenerateAdRequest:
+      type: object
+      properties:
+        topic:
+          type: string
+        customHeadline:
+          type: string
+        customSubheadline:
+          type: string
+        noSubheadline:
+          type: boolean
+        style:
+          type: string
+          enum:
+            - mockup-dark
+            - mockup-light
+            - center
+            - emotion
+        format:
+          type: string
+          enum: [story, post]
+          description: Output aspect ratio — story (9:16) or post (1:1 square). Default story.
+        addBackgroundImage:
+          type: boolean
+        bgColor:
+          type: string
+        lang:
+          type: string
+          enum: [es, en]
+          description: Output language for generated content (default es)
+
+    AdItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        headline:
+          type: string
+        subheadline:
+          type: string
+          nullable: true
+        accentWord:
+          type: string
+          nullable: true
+        style:
+          type: string
+        format:
+          type: string
+        backgroundImageUrl:
+          type: string
+          nullable: true
+        bgColor:
+          type: string
+          nullable: true
+        posted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - headline
+        - style
+        - format
+        - posted
+        - createdAt
+
+    GenerateAdResponse:
+      type: object
+      properties:
+        ad:
+          $ref: "#/components/schemas/AdItem"
+      required:
+        - ad
+
+    AdsListResponse:
+      type: object
+      properties:
+        ads:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdItem"
+      required:
+        - ads
+
+    CctStats:
+      type: object
+      properties:
+        twitterPostsToday:
+          type: integer
+        twitterPostsTotal:
+          type: integer
+        instagramCarouselsToday:
+          type: integer
+        instagramCarouselsTotal:
+          type: integer
+        lastGeneratedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - twitterPostsToday
+        - twitterPostsTotal
+        - instagramCarouselsToday
+        - instagramCarouselsTotal
+        - lastGeneratedAt
+
+    UsageData:
+      type: object
+      properties:
+        totalTokens:
+          type: integer
+        instagramTokens:
+          type: integer
+        adgenTokens:
+          type: integer
+        twitterTokens:
+          type: integer
+        contentgenTokens:
+          type: integer
+        daily:
+          type: array
+          items:
+            $ref: "#/components/schemas/UsageDailyEntry"
+      required:
+        - totalTokens
+        - instagramTokens
+        - adgenTokens
+        - twitterTokens
+        - contentgenTokens
+        - daily
+
+    UsageDailyEntry:
+      type: object
+      properties:
+        date:
+          type: string
+        instagram:
+          type: integer
+        adgen:
+          type: integer
+        twitter:
+          type: integer
+        contentgen:
+          type: integer
+        total:
+          type: integer
+      required:
+        - date
+        - instagram
+        - adgen
+        - twitter
+        - contentgen
+        - total
+
+    EngineNewsResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/EngineNewsArticle"
+        totalFetched:
+          type: integer
+        totalFiltered:
+          type: integer
+      required:
+        - articles
+
+    EngineNewsArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        source:
+          type: string
+        url:
+          type: string
+        importance:
+          type: integer
+      required:
+        - title
+        - description
+        - source
+        - url
+        - importance
